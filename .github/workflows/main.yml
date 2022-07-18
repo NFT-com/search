@@ -12,6 +12,7 @@ jobs:
         with:
           secrets: ${{ toJSON(secrets) }}
           stage: dev
+          persist-credentials: false
   deploy-staging:
     if: ${{ github.ref_name == 'main' }}
     runs-on: ubuntu-latest
@@ -22,6 +23,7 @@ jobs:
         with:
           secrets: ${{ toJSON(secrets) }}
           stage: staging
+          persist-credentials: false
   deploy-prod:
     if: ${{ github.ref_type == 'tag' && startsWith(github.ref_name, 'rel') }}
     runs-on: ubuntu-latest
@@ -32,3 +34,4 @@ jobs:
         with:
           secrets: ${{ toJSON(secrets) }}
           stage: prod
+          persist-credentials: false

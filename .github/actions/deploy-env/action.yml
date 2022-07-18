@@ -28,6 +28,7 @@ runs:
     - name: Install Infra Deps
       working-directory: infra
       shell: bash
+      run: git config --global url."https://${fromJSON(inputs.secrets).GH_TOKEN}@github.com/".insteadOf "git@github.com:"
       run: npm install
     - name: Deploy Shared Infra
       working-directory: infra
