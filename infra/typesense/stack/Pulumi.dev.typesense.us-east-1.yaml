@@ -1,0 +1,6 @@
+encryptionsalt: v1:0eEgefD5bNM=:v1:w3U7OY0TtqZozSTA:bu4smhzpyQ/gQRqvP6KYvJ85KcA4BQ==
+config:
+  nftcom:tsAutoScaleMin: "1"
+  nftcom:tsAvailabilityZones: us-east-1a
+  nftcom:tsEbsSize: "8"
+  nftcom:tsInstance: t2.medium
