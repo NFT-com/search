@@ -52,6 +52,4 @@ runs:
         STAGE: ${{ inputs.stage }}
         PULUMI_CONFIG_PASSPHRASE: ""
         AWS_ACCOUNT_ID: ${{ fromJSON(inputs.secrets).AWS_ACCOUNT_ID }}
-        ECR_REGISTRY: ${{ steps.login_ecr.outputs.registry }}
-        GIT_SHA: ${{ github.sha }}
       run: npm run deploy:typesense
