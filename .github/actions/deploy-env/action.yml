@@ -26,11 +26,11 @@ runs:
       shell: bash
       run: pulumi login s3://nftcom-pulumi-state
     - name: Install Infra Deps
-      working-directory: infra
+      working-directory: search/infra
       shell: bash
       run:  npm install
     - name: Deploy Shared Infra
-      working-directory: infra
+      working-directory: search/infra
       shell: bash
       env:
         STAGE: ${{ inputs.stage }}
@@ -43,11 +43,11 @@ runs:
       with:
         filters: |
           typesense:
-            - 'infra/**'
+            - 'search/infra/**'
     - name: Deploy Typesense Infra
       if: ${{ steps.filter.outputs.typesense == 'true' }}
       shell: bash
-      working-directory: infra
+      working-directory: search/infra
       env:
         STAGE: ${{ inputs.stage }}
         PULUMI_CONFIG_PASSPHRASE: ""
