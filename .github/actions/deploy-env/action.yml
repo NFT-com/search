@@ -32,8 +32,8 @@ runs:
       run:  npm install
     - uses: dorny/paths-filter@v2
       id: filter
-      working-directory: search
       with:
+        working-directory: search
         filters: |
           typesense:
             - 'infra/**'
