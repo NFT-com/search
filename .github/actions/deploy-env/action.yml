@@ -32,10 +32,11 @@ runs:
       run:  npm install
     - uses: dorny/paths-filter@v2
       id: filter
+      working-directory: search
       with:
         filters: |
           typesense:
-            - 'search/infra/**'
+            - 'infra/**'
     - name: Deploy Typesense Infra
       if: ${{ steps.filter.outputs.typesense == 'true' }}
       shell: bash
