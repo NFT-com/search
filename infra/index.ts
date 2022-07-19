@@ -50,12 +50,15 @@ export const getSharedInfra = (
 
 const main = async (): Promise<any> => {
   const args = process.argv.slice(2)
+  const outputSharedInfra = args?.[0] == 'get:shared' || false
   const deployTypesense = args?.[0] == 'deploy:typesense' || false
 
+  if (outputSharedInfra) {
+    return getSharedInfra().then(sharedOutToJSONFile)
+  }
+
   if (deployTypesense) {
-    return getSharedInfra()
-      .then(sharedOutToJSONFile)
-      .then(() => createTypesenseCluster())
+    return createTypesenseCluster()
   }
 }
 

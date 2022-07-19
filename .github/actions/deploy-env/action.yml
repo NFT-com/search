@@ -49,4 +49,6 @@ runs:
         STAGE: ${{ inputs.stage }}
         PULUMI_CONFIG_PASSPHRASE: ""
         AWS_ACCOUNT_ID: ${{ fromJSON(inputs.secrets).AWS_ACCOUNT_ID }}
-      run: npm run deploy:typesense
+      run: |
+        npm run get:shared
+        npm run deploy:typesense
