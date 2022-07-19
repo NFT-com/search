@@ -1,8 +1,7 @@
 {
   "name": "nftcom-infra-typesense",
   "scripts": {
-    "deploy:typesense": "ts-node index.ts deploy:typesense",
-    "get:shared": "ts-node index.ts get:shared"
+    "deploy:typesense": "ts-node index.ts deploy:typesense"
   },
   "dependencies": {
     "@actions/core": "^1.6.0",
