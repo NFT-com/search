@@ -15,7 +15,7 @@
     "envfile": "^6.17.0",
     "js-yaml": "^4.1.0",
     "lodash": "^4.17.21",
-    "nftcom": "github:NFT-com/NFT-backend#main",
+    "nftcom": "file:../../NFT-backend",
     "upath": "^2.0.1"
   },
   "devDependencies": {
