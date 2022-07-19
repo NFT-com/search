@@ -6,9 +6,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: nftcom_search_dev
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
-          persist-credentials: false
+          token: ${{secrets.CROSSREPO_PAT}}
       - uses: ./.github/actions/deploy-env
         name: Deploy env
         with:
@@ -20,9 +20,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: nftcom_search_staging
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
-          persist-credentials: false
+          token: ${{secrets.CROSSREPO_PAT}}
       - uses: ./.github/actions/deploy-env
         with:
           secrets: ${{ toJSON(secrets) }}
@@ -32,9 +32,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: nftcom_search_prod
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
-          persist-credentials: false
+          token: ${{secrets.CROSSREPO_PAT}}
       - uses: ./.github/actions/deploy-env
         with:
           secrets: ${{ toJSON(secrets) }}
