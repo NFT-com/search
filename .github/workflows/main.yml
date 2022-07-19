@@ -8,12 +8,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          token: ${{secrets.CROSSREPO_PAT}}
+          persist-credentials: false
       - uses: ./.github/actions/deploy-env
         name: Deploy env
         with:
           secrets: ${{ toJSON(secrets) }}
           stage: dev
+          persist-credentials: false
   deploy-staging:
     if: ${{ github.ref_name == 'main' }}
     runs-on: ubuntu-latest
@@ -21,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          token: ${{secrets.CROSSREPO_PAT}}
+          persist-credentials: false
       - uses: ./.github/actions/deploy-env
         with:
           secrets: ${{ toJSON(secrets) }}
@@ -33,7 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          token: ${{secrets.CROSSREPO_PAT}}
+          persist-credentials: false
       - uses: ./.github/actions/deploy-env
         with:
           secrets: ${{ toJSON(secrets) }}

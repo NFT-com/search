@@ -28,7 +28,11 @@ runs:
     - name: Install Infra Deps
       working-directory: infra
       shell: bash
-      run:  npm install
+      env:
+        GH_TOKEN: ${{ fromJSON(inputs.secrets).CROSSREPO_PAT }}
+      run: |
+        git config --global url."https://${GH_TOKEN}@github.com/".insteadOf ssh://git@github.com/
+        npm install
     - name: Deploy Shared Infra
       working-directory: infra
       shell: bash
