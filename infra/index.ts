@@ -1,19 +1,20 @@
 import * as console from 'console'
 import * as process from 'process'
+import * as pulumi from '@pulumi/pulumi'
 
-import { createSharedInfra } from 'nftcom/infra/shared'
 import { sharedOutToJSONFile } from 'nftcom/infra'
 import { createTypesenseCluster } from './typesense'
 
+const getSharedInfra = async (): Promise<any> => {
+  const sharedStack = new pulumi.StackReference( `${process.env.STAGE}.shared.${process.env.AWS_REGION}`);
+  return sharedStack.outputs
+}
+
 const main = async (): Promise<any> => {
   const args = process.argv.slice(2)
-  const deployShared = args?.[0] === 'deploy:shared' || false
   const deployTypesense = args?.[0] == 'deploy:typesense' || false
 
-  if (deployShared) {
-    return createSharedInfra()
-      .then(sharedOutToJSONFile)
-  }
+  getSharedInfra().then(sharedOutToJSONFile)
 
   if (deployTypesense) {
     return createTypesenseCluster()

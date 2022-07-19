@@ -1,0 +1,38 @@
+{
+  "name": "nftcom-search",
+  "version": "1.0.0",
+  "private": true,
+  "description": "NFT.com's search monorepo",
+  "license": "UNLICENSED",
+  "author": "NFT.com (https://nft.com)",
+  "scripts": {
+    "lint": "eslint --color . --ext .ts,.mjs,.js --cache --fix",
+    "prepare": "npx husky install"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "lint-staged": {
+    "*.(js|ts)": "eslint --color . --ext .ts,.mjs,.js --cache --fix"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^15.0.0",
+    "@commitlint/config-conventional": "^15.0.0",
+    "@types/node": "^16.11.7",
+    "@typescript-eslint/eslint-plugin": "^5.4.0",
+    "@typescript-eslint/parser": "^5.4.0",
+    "eslint": "^8.2.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "husky": "^7.0.4",
+    "lint-staged": "^12.0.2",
+    "ts-node": "^10.4.0",
+    "tsconfig-paths": "^3.11.0",
+    "typescript": "^4.4.4"
+  },
+  "engines": {
+    "node": ">=16",
+    "npm": ">=7"
+  }
+}

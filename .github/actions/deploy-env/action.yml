@@ -23,21 +23,13 @@ runs:
     - name: Install pulumi
       uses: pulumi/setup-pulumi@v2
     - name: Login to Pulumi backend
+      working-directory: search/infra
       shell: bash
       run: pulumi login s3://nftcom-pulumi-state
     - name: Install Infra Deps
       working-directory: search/infra
       shell: bash
       run:  npm install
-    - name: Deploy Shared Infra
-      working-directory: search/infra
-      shell: bash
-      env:
-        STAGE: ${{ inputs.stage }}
-        PULUMI_CONFIG_PASSPHRASE: ""
-        AWS_ACCOUNT_ID: ${{ fromJSON(inputs.secrets).AWS_ACCOUNT_ID }}
-        DB_PASSWORD: ${{ fromJSON(inputs.secrets).DB_PASSWORD }}
-      run: npm run deploy:shared
     - uses: dorny/paths-filter@v2
       id: filter
       with:
