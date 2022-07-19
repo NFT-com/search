@@ -7,31 +7,34 @@ jobs:
     environment: nftcom_search_dev
     steps:
       - uses: actions/checkout@v2
+        with:
+          token: ${{secrets. CROSSREPO_PAT}}
       - uses: ./.github/actions/deploy-env
         name: Deploy env
         with:
           secrets: ${{ toJSON(secrets) }}
           stage: dev
-          persist-credentials: false
   deploy-staging:
     if: ${{ github.ref_name == 'main' }}
     runs-on: ubuntu-latest
     environment: nftcom_search_staging
     steps:
       - uses: actions/checkout@v2
+        with:
+          token: ${{secrets. CROSSREPO_PAT}}
       - uses: ./.github/actions/deploy-env
         with:
           secrets: ${{ toJSON(secrets) }}
           stage: staging
-          persist-credentials: false
   deploy-prod:
     if: ${{ github.ref_type == 'tag' && startsWith(github.ref_name, 'rel') }}
     runs-on: ubuntu-latest
     environment: nftcom_search_prod
     steps:
       - uses: actions/checkout@v2
+        with:
+          token: ${{secrets. CROSSREPO_PAT}}
       - uses: ./.github/actions/deploy-env
         with:
           secrets: ${{ toJSON(secrets) }}
           stage: prod
-          persist-credentials: false
