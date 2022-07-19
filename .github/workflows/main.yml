@@ -9,12 +9,12 @@ jobs:
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
-          path: search
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
           token: ${{secrets.CROSSREPO_PAT}}
-          path: NFT-backend
+          repository: NFT-com/NFT-backend
+          path: ../NFT-backend
       - uses: ./.github/actions/deploy-env
         name: Deploy env
         with:
@@ -28,12 +28,12 @@ jobs:
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
-          path: search
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
           token: ${{secrets.CROSSREPO_PAT}}
-          path: NFT-backend
+          repository: NFT-com/NFT-backend
+          path: ../NFT-backend
       - uses: ./.github/actions/deploy-env
         with:
           secrets: ${{ toJSON(secrets) }}
@@ -46,12 +46,12 @@ jobs:
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
-          path: search
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
           token: ${{secrets.CROSSREPO_PAT}}
-          path: NFT-backend
+          repository: NFT-com/NFT-backend
+          path: ../NFT-backend
       - uses: ./.github/actions/deploy-env
         with:
           secrets: ${{ toJSON(secrets) }}
