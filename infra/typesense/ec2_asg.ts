@@ -1,8 +1,8 @@
 import * as aws from '@pulumi/aws'
 import * as pulumi from '@pulumi/pulumi'
 
-import { SharedInfraOutput } from 'nftcom/infra/defs'
-import { getResourceName, getTags, isProduction } from 'nftcom/infra/helper'
+import { SharedInfraOutput } from 'nftcom-infra/defs'
+import { getResourceName, getTags, isProduction } from 'nftcom-infra/helper'
 
 const tags = {
   service: 'typesense',

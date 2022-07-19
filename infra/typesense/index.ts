@@ -2,7 +2,7 @@ import * as upath from 'upath'
 
 import * as pulumi from '@pulumi/pulumi'
 
-import { deployInfra, getSharedInfraOutput } from 'nftcom/infra/helper'
+import { deployInfra, getSharedInfraOutput } from 'nftcom-infra/helper'
 import { createEc2Asg } from './ec2_asg'
 
 const pulumiProgram = async (): Promise<Record<string, any> | void> => {

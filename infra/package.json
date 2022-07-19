@@ -1,9 +1,6 @@
 {
   "name": "nftcom-infra-typesense",
   "scripts": {
-    "build:gql:env": "ts-node index.ts gql:env",
-    "deploy:shared": "ts-node index.ts deploy:shared",
-    "deploy:gql": "ts-node index.ts deploy:gql",
     "deploy:typesense": "ts-node index.ts deploy:typesense"
   },
   "dependencies": {
@@ -15,7 +12,7 @@
     "envfile": "^6.17.0",
     "js-yaml": "^4.1.0",
     "lodash": "^4.17.21",
-    "nftcom": "file:../../NFT-backend",
+    "nftcom-infra": "file:../../NFT-backend/infra",
     "upath": "^2.0.1"
   },
   "devDependencies": {

@@ -2,7 +2,7 @@ import * as console from 'console'
 import * as process from 'process'
 import * as pulumi from '@pulumi/pulumi'
 
-import { sharedOutToJSONFile } from 'nftcom/infra'
+import { sharedOutToJSONFile } from 'nftcom-infra'
 import { createTypesenseCluster } from './typesense'
 
 const getSharedInfra = async (): Promise<any> => {
