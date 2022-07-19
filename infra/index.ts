@@ -44,7 +44,7 @@ export const getSharedInfra = (
   preview?: boolean,
 ): Promise<pulumi.automation.OutputMap> => {
   const stackName = `${process.env.STAGE}.typesense.${process.env.AWS_REGION}`
-  const workDir = upath.joinSafe(__dirname, 'stack')
+  const workDir = upath.joinSafe(__dirname, 'typesense', 'stack')
   return deployInfra(stackName, workDir, pulumiProgram, preview)
 }
 
