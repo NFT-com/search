@@ -17,7 +17,7 @@ jobs:
           repository: NFT-com/NFT-backend
           ref: main
           path: NFT-backend
-      - uses: ./.github/actions/deploy-env
+      - uses: ./search/.github/actions/deploy-env
         name: Deploy env
         with:
           secrets: ${{ toJSON(secrets) }}
@@ -38,7 +38,7 @@ jobs:
           repository: NFT-com/NFT-backend
           ref: main
           path: NFT-backend
-      - uses: ./.github/actions/deploy-env
+      - uses: ./search/.github/actions/deploy-env
         with:
           secrets: ${{ toJSON(secrets) }}
           stage: staging
@@ -58,7 +58,7 @@ jobs:
           repository: NFT-com/NFT-backend
           ref: main
           path: NFT-backend
-      - uses: ./.github/actions/deploy-env
+      - uses: ./search/.github/actions/deploy-env
         with:
           secrets: ${{ toJSON(secrets) }}
           stage: prod
