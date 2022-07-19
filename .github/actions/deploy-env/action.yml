@@ -26,6 +26,10 @@ runs:
       working-directory: search/infra
       shell: bash
       run: pulumi login s3://nftcom-pulumi-state
+    - name: Install Shared Deps
+      working-directory: NFT-backend/infra
+      shell: bash
+      run:  npm install
     - name: Install Infra Deps
       working-directory: search/infra
       shell: bash
