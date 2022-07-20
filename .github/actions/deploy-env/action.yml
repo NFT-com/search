@@ -22,8 +22,6 @@ runs:
         aws-secret-access-key: ${{ fromJSON(inputs.secrets).AWS_SECRET_ACCESS_KEY }}
     - name: Install pulumi
       uses: pulumi/setup-pulumi@v2
-      with:
-        pulumi-version: 3.30.0
     - name: Login to Pulumi backend
       working-directory: search/infra
       shell: bash
