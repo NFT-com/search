@@ -23,35 +23,31 @@ runs:
     - name: Install pulumi
       uses: pulumi/setup-pulumi@v2
     - name: Login to Pulumi backend
+      working-directory: search/infra
       shell: bash
       run: pulumi login s3://nftcom-pulumi-state
+    - name: Install Shared Deps
+      working-directory: NFT-backend/infra
+      shell: bash
+      run:  npm ci
     - name: Install Infra Deps
-      working-directory: infra
+      working-directory: search/infra
       shell: bash
-      run: npm install
-    - name: Deploy Shared Infra
-      working-directory: infra
-      shell: bash
-      env:
-        STAGE: ${{ inputs.stage }}
-        PULUMI_CONFIG_PASSPHRASE: ""
-        AWS_ACCOUNT_ID: ${{ fromJSON(inputs.secrets).AWS_ACCOUNT_ID }}
-        DB_PASSWORD: ${{ fromJSON(inputs.secrets).DB_PASSWORD }}
-      run: npm run deploy:shared
+      run:  npm install
     - uses: dorny/paths-filter@v2
       id: filter
       with:
+        working-directory: search
         filters: |
           typesense:
-            - 'infra/typesense/**'
+            - 'infra/**'
     - name: Deploy Typesense Infra
       if: ${{ steps.filter.outputs.typesense == 'true' }}
       shell: bash
-      working-directory: infra
+      working-directory: search/infra
       env:
         STAGE: ${{ inputs.stage }}
         PULUMI_CONFIG_PASSPHRASE: ""
         AWS_ACCOUNT_ID: ${{ fromJSON(inputs.secrets).AWS_ACCOUNT_ID }}
-        ECR_REGISTRY: ${{ steps.login_ecr.outputs.registry }}
-        GIT_SHA: ${{ github.sha }}
+        TYPESENSE_API_KEY: ${{ fromJSON(inputs.secrets).TYPESENSE_API_KEY }}
       run: npm run deploy:typesense
