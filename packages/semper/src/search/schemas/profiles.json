@@ -1,0 +1,10 @@
+{
+  "name": "profiles",
+  "fields": [
+    {"name": "id", "type": "string", "facet": false, "index":false },
+    {"name": "url", "type": "string", "facet": false, "index": true },
+    {"name": "ownerAddress", "type": "string", "facet": false, "index": false, "optional": true },
+    {"name": "photoURL", "type": "string", "facet": false, "index": false, "optional": true }
+  ],
+  "default_sorting_field": ""
+}
