@@ -1,11 +1,12 @@
 import * as upath from 'upath'
+
 import * as pulumi from '@pulumi/pulumi'
 
-import { createEc2Asg } from './ec2_asg'
 import { deployInfra } from '../helper'
+import { createEc2Asg } from './ec2_asg'
 
 const getSharedStackOutputs = async (): Promise<any> => {
-  const sharedStack = new pulumi.StackReference(`${process.env.STAGE}.shared.${process.env.AWS_REGION}`);
+  const sharedStack = new pulumi.StackReference(`${process.env.STAGE}.shared.${process.env.AWS_REGION}`)
   return sharedStack.outputs
 }
 
