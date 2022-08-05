@@ -2,7 +2,7 @@ import { BigNumber } from 'ethers'
 
 import { entity } from '@nftcom/shared'
 
-import { NFTDao, ProfileDao } from './model'
+import { CollectionDao, NFTDao } from './model'
 
 export const collectionNames = ['collections', 'nfts', 'profiles', 'wallets']
 
@@ -19,7 +19,7 @@ export const mapCollectionData = (
   let result: any[]
   switch (collectionName) {
   case 'collections':
-    result = data.map((collection: entity.Collection) => {
+    result = data.map((collection: CollectionDao) => {
       return {
         id: collection.id,
         contractAddr: collection.contract,
@@ -27,48 +27,35 @@ export const mapCollectionData = (
         chain: collection.chainId,
         description: '',
         floor: getRandomFloat(0, 5, 2),
+        nftType: collection.nft?.type || '',
       }
     })
     break
   case 'nfts':
     result = data.map((nft: NFTDao) => {
+      const tokenId = BigNumber.from(nft.tokenId).toString()
       const traits = nft.metadata.traits.map((trait) => {
         return `${trait.type}:${trait.value}`
       })
+      const profileContract = process.env.TYPESENSE_HOST.startsWith('dev') ?
+        '0x9Ef7A34dcCc32065802B1358129a226B228daB4E' : '0x98ca78e89Dd1aBE48A53dEe5799F24cC1A462F2D'
       return {
         id: nft.id,
-        contractAddr: nft.contract,
-        tokenId: BigNumber.from(nft.tokenId).toString(),
-        nftName: nft.metadata.name,
+        nftName: nft.metadata.name || `${nft.collection?.name + ' '|| ''}#${tokenId}`,
         nftType: nft.type,
-        listingType: '',
-        chain: nft.wallet.chainName,
-        status: '',
-        marketplace: 'OpenSea',
-        contractName: nft.collection?.name || '',
+        tokenId,
+        traits,
         imageURL: nft.metadata.imageURL,
+        ownerAddr: nft.wallet.address,
+        chain: nft.wallet.chainName,
+        contractName: nft.collection?.name || '',
+        contractAddr: nft.contract,
+        marketplace: 'OpenSea',
+        listingType: '',
         listedPx: getRandomFloat(0.3, 2, 2),
         currency: 'ETH',
-        traits,
-      }
-    })
-    break
-  case 'profiles':
-    result = data.map((profile: ProfileDao) => {
-      return {
-        id: profile.id,
-        url: profile.url,
-        ownerAddress: profile.wallet?.address,
-        photoURL: profile.photoURL,
-      }
-    })
-    break
-  case 'wallets':
-    result = data.map((wallet: entity.Wallet) => {
-      return {
-        id: wallet.id,
-        chain: wallet.network,
-        address: wallet.address,
+        status: '',
+        isProfile: nft.contract === profileContract,
       }
     })
     break

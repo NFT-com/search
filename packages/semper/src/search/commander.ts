@@ -8,15 +8,13 @@ import { db } from '@nftcom/shared'
 import { collectionNames, mapCollectionData } from './collections'
 import collections from './schemas/collections.json'
 import nfts from './schemas/nfts.json'
-import profiles from './schemas/profiles.json'
-import wallets from './schemas/wallets.json'
 
 const logger = _logger.Factory(
   _logger.Context.General,
   _logger.Context.Typesense,
 )
 
-const schemas = [collections, nfts, profiles, wallets]
+const schemas = [collections, nfts]
 
 class Commander {
 
@@ -37,8 +35,10 @@ class Commander {
   }
 
   private _retrieveData = async (name: string): Promise<any[]> => {
-    if (name === 'nfts' || name === 'profiles') {
+    if (name === 'nfts') {
       return this.repositories[name.slice(0, -1)].findAllWithRelations()
+    } else if (name === 'collections') {
+      return this.repositories.collection.findAllWithAnNft()
     }
     return await this.repositories[name.slice(0, -1)].findAll()
   }

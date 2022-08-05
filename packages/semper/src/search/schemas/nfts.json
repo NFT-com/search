@@ -2,19 +2,21 @@
   "name": "nfts",
   "fields": [
     {"name": "id", "type": "string", "facet": false, "index": false },
-    {"name": "contractAddr", "type": "string", "facet": false, "index": true },
-    {"name": "tokenId", "type": "string", "facet": false, "index": true },
     {"name": "nftName", "type": "string", "facet": false, "index": true },
     {"name": "nftType", "type": "string", "facet": true, "index": true },
-    {"name": "listingType", "type": "string", "facet": true, "index": true },
-    {"name": "chain", "type": "string", "facet": true, "index": true },
-    {"name": "status", "type": "string", "facet": true, "index": true, "optional": true },
-    {"name": "marketplace", "type": "string", "facet": true, "index": true, "optional": true },
-    {"name": "contractName", "type": "string", "facet": true, "index": true, "optional": true }, 
+    {"name": "tokenId", "type": "string", "facet": false, "index": true },
+    {"name": "traits", "type": "string[]", "facet": true, "index": true, "optional": true },
     {"name": "imageURL", "type": "string", "facet": false, "index": false, "optional": true }, 
-    {"name": "listedPx", "type": "float", "facet": true, "index": true, "optional": false },
+    {"name": "ownerAddr", "type": "string", "facet": false, "index": true },
+    {"name": "chain", "type": "string", "facet": true, "index": true },
+    {"name": "contractName", "type": "string", "facet": true, "index": true, "optional": true }, 
+    {"name": "contractAddr", "type": "string", "facet": false, "index": true },
+    {"name": "marketplace", "type": "string", "facet": true, "index": true, "optional": true },
+    {"name": "listingType", "type": "string", "facet": true, "index": true },
+    {"name": "listedPx", "type": "float", "facet": true, "index": true },
     {"name": "currency", "type": "string", "facet": true, "index": true, "optional": true },
-    {"name": "traits", "type": "string[]", "facet": true, "index": true, "optional": true }
+    {"name": "status", "type": "string", "facet": true, "index": true, "optional": true },
+    {"name": "isProfile", "type": "bool", "facet": true, "index": true }
   ],
   "default_sorting_field": "listedPx"
 }

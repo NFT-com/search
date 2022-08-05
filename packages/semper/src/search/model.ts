@@ -5,6 +5,6 @@ export type NFTDao = entity.NFT & {
   wallet: entity.Wallet
 }
 
-export type ProfileDao = entity.Profile & {
-  wallet: entity.Wallet
+export type CollectionDao = entity.Collection & {
+  nft: entity.NFT
 }
