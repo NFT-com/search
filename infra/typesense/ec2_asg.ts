@@ -101,6 +101,7 @@ const createBlockDevices = (config: pulumi.Config): aws.ebs.Volume[] => {
   })
 }
 
+const mountPoint = process.env.STAGE === 'prod' ? '/dev/nvme1n1' : '/dev/xvdf'
 const getUserData = (): string => {
   return `#!/bin/bash -ex
   # Download and install packages
@@ -145,15 +146,15 @@ const getUserData = (): string => {
     fi
   done
   
-  if [ "$(file -b -s /dev/xvdf)" == 'data' ]; then
-    mkfs -t ext4 /dev/xvdf
+  if [ "$(file -b -s ${mountPoint})" == 'data' ]; then
+    mkfs -t ext4 ${mountPoint}
   fi
 
   mkdir -p /var/lib/typesense
-  mount /dev/xvdf /var/lib/typesense
+  mount ${mountPoint} /var/lib/typesense
 
   # Persist the volume in /etc/fstab so it gets mounted again
-  echo '/dev/xvdf /var/lib/typesense ext4 defaults,nofail 0 2' >> /etc/fstab
+  echo '${mountPoint} /var/lib/typesense ext4 defaults,nofail 0 2' >> /etc/fstab
 
   # Download and install Typesense
   curl -O https://dl.typesense.org/releases/0.23.0/typesense-server-0.23.0-amd64.deb
