@@ -1,14 +1,81 @@
 import * as aws from '@pulumi/aws'
+import { ec2 } from '@pulumi/awsx'
 import * as pulumi from '@pulumi/pulumi'
 
 import { SharedInfraOutput } from '../defs'
 import { getResourceName, getTags, isProduction } from '../helper'
 
+type InfraOutput = Omit<SharedInfraOutput, 'typesenseSGId'> & {
+  typesenseSGId: pulumi.Output<string>
+}
+
 const tags = {
   service: 'typesense',
 }
 
-const createTargetGroup = (infraOutput: SharedInfraOutput): aws.lb.TargetGroup => {
+interface BuildIngressRuleArgs {
+  protocol: string
+  fromPort: number
+  toPort?: number
+  sourceSecurityGroupId?: string[]
+  selfSource?: boolean
+}
+const buildIngressRule = (
+  {
+    protocol,
+    fromPort,
+    toPort,
+    sourceSecurityGroupId,
+    selfSource,
+  }: BuildIngressRuleArgs): any => {
+  const rule = {
+    protocol,
+    fromPort: fromPort,
+    toPort: toPort || fromPort,
+  }
+  if (sourceSecurityGroupId?.length) {
+    return {
+      ...rule,
+      securityGroups: sourceSecurityGroupId,
+    }
+  }
+
+  if (selfSource) {
+    return {
+      ...rule,
+      self: selfSource,
+    }
+  }
+
+  return {
+    ...rule,
+    cidrBlocks: new ec2.AnyIPv4Location().cidrBlocks,
+    ipv6CidrBlocks: new ec2.AnyIPv6Location().ipv6CidrBlocks,
+  }
+}
+
+const createSecurityGroup = (infraOutput: InfraOutput): aws.ec2.SecurityGroup => {
+  const typesenseIngressRules = [
+    buildIngressRule({ protocol: 'tcp', fromPort: 8108, sourceSecurityGroupId: [infraOutput.webSGId] }),
+    buildIngressRule({ protocol: 'tcp', fromPort: 8107, toPort: 8108, selfSource: true }),
+    buildIngressRule({ protocol: 'icmp', fromPort: -1, selfSource: true }),
+  ]
+  return new aws.ec2.SecurityGroup('sg_typesense', {
+    description: 'Allow traffic to Typesense service',
+    name: getResourceName('typesense'),
+    vpcId: infraOutput.vpcId,
+    ingress:
+      isProduction() ?
+        [
+          ...typesenseIngressRules,
+          buildIngressRule({ fromPort: 0, toPort: 65535, protocol: 'tcp', sourceSecurityGroupId: ['sg-0bad265e467cdec96'] }), // Bastion Host
+        ]
+        : typesenseIngressRules,
+    egress: [buildIngressRule({ fromPort: 0, protocol: '-1' })],
+  })
+}
+
+const createTargetGroup = (infraOutput: InfraOutput): aws.lb.TargetGroup => {
   return new aws.lb.TargetGroup('tg_typesense', {
     healthCheck: {
       healthyThreshold: 5,
@@ -26,7 +93,7 @@ const createTargetGroup = (infraOutput: SharedInfraOutput): aws.lb.TargetGroup =
 }
 
 const createLoadBalancer = (
-  infraOutput: SharedInfraOutput,
+  infraOutput: InfraOutput,
 ): aws.lb.LoadBalancer => {
   return new aws.lb.LoadBalancer('lb_typesense', {
     ipAddressType: 'ipv4',
@@ -277,7 +344,7 @@ const createInstanceProfile = (): aws.iam.InstanceProfile => {
 }
 
 const createLaunchTemplate = (
-  config: pulumi.Config, infraOutput: SharedInfraOutput,
+  config: pulumi.Config, infraOutput: InfraOutput,
 ): aws.ec2.LaunchTemplate => {
   const ami = getAmi()
   const typesenseProfile = createInstanceProfile()
@@ -307,7 +374,7 @@ const createLaunchTemplate = (
 
 const createAutoScalingGroup = (
   config: pulumi.Config,
-  infraOutput: SharedInfraOutput,
+  infraOutput: InfraOutput,
   lt: aws.ec2.LaunchTemplate,
   tg: aws.lb.TargetGroup,
 ): aws.autoscaling.Group => {
@@ -357,7 +424,9 @@ const createAutoScalingGroup = (
   })
 }
 
-export const createEc2Asg = (config: pulumi.Config, infraOutput: SharedInfraOutput): void => {
+export const createEc2Asg = (config: pulumi.Config, infraOutput: InfraOutput): void => {
+  const sg = createSecurityGroup(infraOutput)
+  infraOutput.typesenseSGId = sg.id
   const tg = createTargetGroup(infraOutput)
   const lb = createLoadBalancer(infraOutput)
   attachLBListeners(lb, tg)
