@@ -227,8 +227,8 @@ const getUserData = (): string => {
   curl -O https://dl.typesense.org/releases/0.23.0/typesense-server-0.23.0-amd64.deb
   apt-get install -y ./typesense-server-0.23.0-amd64.deb
   echo 'enable-cors = true' >> /etc/typesense/typesense-server.ini
+  echo 'nodes = /etc/typesense/nodes' >> /etc/typesense/typesense-server.ini
   sed -i 's/api-key = .*/api-key = ${process.env.TYPESENSE_API_KEY}/' /etc/typesense/typesense-server.ini
-  systemctl restart typesense-server.service
 
   # Add SSM Command to rc.local incase the instance is restarted
   cat > '/etc/rc.local' <<-'SSM_SEND_COMMAND'
@@ -261,6 +261,8 @@ const getUserData = (): string => {
   SSM_SEND_COMMAND
   chmod 755 /etc/rc.local
   . /etc/rc.local
+
+  systemctl restart typesense-server.service
   `.replace(/^\s{0,2}/gm, '')
 }
 
