@@ -62,7 +62,7 @@ const createSecurityGroup = (infraOutput: InfraOutput): aws.ec2.SecurityGroup =>
   ]
   return new aws.ec2.SecurityGroup('sg_typesense', {
     description: 'Allow traffic to Typesense service',
-    name: getResourceName('typesense'),
+    name: getResourceName('typesense-api'),
     vpcId: infraOutput.vpcId,
     ingress:
       isProduction() ?
