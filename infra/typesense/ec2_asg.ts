@@ -226,6 +226,9 @@ const getUserData = (): string => {
   # Download and install Typesense
   curl -O https://dl.typesense.org/releases/0.23.0/typesense-server-0.23.0-amd64.deb
   apt-get install -y ./typesense-server-0.23.0-amd64.deb
+  EC2_PRIVATE_IP=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)
+  echo "peering-address = $EC2_PRIVATE_IP" >> /etc/typesense/typesense-server.ini
+  echo 'peering-port = 8107' >> /etc/typesense/typesense-server.ini
   echo 'enable-cors = true' >> /etc/typesense/typesense-server.ini
   echo 'nodes = /etc/typesense/nodes' >> /etc/typesense/typesense-server.ini
   sed -i 's/api-key = .*/api-key = ${process.env.TYPESENSE_API_KEY}/' /etc/typesense/typesense-server.ini

@@ -16,7 +16,7 @@ const typesenseClient = new Typesense.Client({
     },
   ],
   apiKey: TYPESENSE_API_KEY,
-  connectionTimeoutSeconds: 10,
+  connectionTimeoutSeconds: 180,
 })
 
 const dbConfig = {
