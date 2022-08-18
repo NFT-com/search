@@ -4,7 +4,7 @@ import { entity } from '@nftcom/shared'
 
 import { CollectionDao, NFTDao } from './model'
 
-export const collectionNames = ['collections', 'nfts', 'profiles', 'wallets']
+export const collectionNames = ['collections', 'nfts']
 
 const getRandomFloat = (min, max, decimals): number => {
   const str = (Math.random() * (max - min) + min).toFixed(decimals)
@@ -26,7 +26,7 @@ export const mapCollectionData = (
         contractName: collection.name,
         chain: collection.chainId,
         description: '',
-        floor: getRandomFloat(0, 5, 2),
+        floor: process.env.TYPESENSE_HOST === 'prod-typesense.nft.com' ? 0.0 : getRandomFloat(0, 5, 2),
         nftType: collection.nft?.type || '',
       }
     })
@@ -34,9 +34,10 @@ export const mapCollectionData = (
   case 'nfts':
     result = data.map((nft: NFTDao) => {
       const tokenId = BigNumber.from(nft.tokenId).toString()
-      const traits = nft.metadata.traits.map((trait) => {
-        return `${trait.type}:${trait.value}`
-      })
+      // const traits = nft.metadata.traits.map((trait) => {
+      //   return `${trait.type}:${trait.value}`
+      // })
+      const traits = []
       const profileContract = process.env.TYPESENSE_HOST.startsWith('dev') ?
         '0x9Ef7A34dcCc32065802B1358129a226B228daB4E' : '0x98ca78e89Dd1aBE48A53dEe5799F24cC1A462F2D'
       return {
@@ -50,10 +51,10 @@ export const mapCollectionData = (
         chain: nft.wallet.chainName,
         contractName: nft.collection?.name || '',
         contractAddr: nft.contract,
-        marketplace: 'OpenSea',
+        marketplace: process.env.TYPESENSE_HOST === 'prod-typesense.nft.com' ? '' : 'OpenSea',
         listingType: '',
-        listedPx: getRandomFloat(0.3, 2, 2),
-        currency: 'ETH',
+        listedPx: process.env.TYPESENSE_HOST === 'prod-typesense.nft.com' ? 0.0 : getRandomFloat(0.3, 2, 2),
+        currency: process.env.TYPESENSE_HOST === 'prod-typesense.nft.com' ? '' : 'ETH',
         status: '',
         isProfile: nft.contract === profileContract,
       }
