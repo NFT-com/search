@@ -1,7 +1,6 @@
 {
   "name": "collections",
   "fields": [
-    {"name": "id", "type": "string", "facet": false, "index":false },
     {"name": "contractAddr", "type": "string", "facet": false, "index": true },
     {"name": "contractName", "type": "string", "facet": true, "index": true },
     {"name": "chain", "type": "string", "facet": true, "index": true },

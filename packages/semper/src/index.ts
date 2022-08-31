@@ -5,14 +5,16 @@ import { db, helper } from '@nftcom/shared'
 import Commander from './search/commander'
 
 const TYPESENSE_HOST = process.env.TYPESENSE_HOST
+const TYPESENSE_PORT = parseInt(process.env.TYPESENSE_PORT) || 443
+const TYPESENSE_PROTOCOL = process.env.TYPESENSE_PROTOCOL || 'https'
 const TYPESENSE_API_KEY = process.env.TYPESENSE_API_KEY
 
 const typesenseClient = new Typesense.Client({
   nodes: [
     {
       host: TYPESENSE_HOST,
-      port: 443,
-      protocol: 'https',
+      port: TYPESENSE_PORT,
+      protocol: TYPESENSE_PROTOCOL,
     },
   ],
   apiKey: TYPESENSE_API_KEY,

@@ -224,8 +224,8 @@ const getUserData = (): string => {
   echo '${mountPoint} /var/lib/typesense ext4 defaults,nofail 0 2' >> /etc/fstab
 
   # Download and install Typesense
-  curl -O https://dl.typesense.org/releases/0.23.0/typesense-server-0.23.0-amd64.deb
-  apt-get install -y ./typesense-server-0.23.0-amd64.deb
+  curl -O https://dl.typesense.org/releases/0.24.0.rcn4/typesense-server-0.24.0.rcn4-amd64.deb
+  apt-get install -y ./typesense-server-0.24.0.rcn4-amd64.deb
   EC2_PRIVATE_IP=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)
   echo "peering-address = $EC2_PRIVATE_IP" >> /etc/typesense/typesense-server.ini
   echo 'peering-port = 8107' >> /etc/typesense/typesense-server.ini

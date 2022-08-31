@@ -33,6 +33,10 @@ or
 
 `TYPESENSE_HOST=dev-typesense.nft.com TYPESENSE_API_KEY=F45LvXmQz7Vtu2tgUdEmpPVxY7dVd7K1uXH8N9iMnlV8LW7N DB_HOST=dev-main.cluster-clmsk3iud7e0.us-east-1.rds.amazonaws.com DB_PORT=5432 DB_USE_SSL=true npm start`
 
+if running a typesense docker container locally:
+
+`TYPESENSE_HOST=localhost TYPESENSE_PORT=8108 TYPESENSE_PROTOCOL=http TYPESENSE_API_KEY=Hu52dwsas2AdxdE DB_HOST=dev-main.cluster-clmsk3iud7e0.us-east-1.rds.amazonaws.com DB_PORT=5432 DB_USE_SSL=true npm start`
+
 ## Typesense Schemas
 
 Schema files are located in `src/search/schemas/`. Changes to existing files will be picked up automatically on the next run.

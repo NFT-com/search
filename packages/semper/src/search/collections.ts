@@ -34,10 +34,12 @@ export const mapCollectionData = (
   case 'nfts':
     result = data.map((nft: NFTDao) => {
       const tokenId = BigNumber.from(nft.tokenId).toString()
-      // const traits = nft.metadata.traits.map((trait) => {
-      //   return `${trait.type}:${trait.value}`
-      // })
-      const traits = []
+      const traits = nft.metadata.traits.map((trait) => {
+        return {
+          type: trait.type,
+          value: `${trait.value}`,
+        }
+      })
       const profileContract = process.env.TYPESENSE_HOST.startsWith('dev') ?
         '0x9Ef7A34dcCc32065802B1358129a226B228daB4E' : '0x98ca78e89Dd1aBE48A53dEe5799F24cC1A462F2D'
       return {
