@@ -1,6 +1,5 @@
-import { performance } from 'perf_hooks'
 import * as Typesense from 'typesense'
-import { CollectionSchema } from 'typesense/lib/Typesense/Collection'
+import { CollectionSchema, CollectionUpdateSchema } from 'typesense/lib/Typesense/Collection'
 import { CollectionCreateSchema } from 'typesense/lib/Typesense/Collections'
 
 import { _logger } from '@nftcom/shared'
@@ -50,18 +49,11 @@ class Commander {
     }
 
     for (const name of collectionNames) {
-      let start = performance.now()
       const data = await this._retrieveData(name)
-      let end = performance.now()
-      console.log(`_retrieveData(${name}): ${(end-start)/1000}s`)
 
-      start = performance.now()
       const collection = mapCollectionData(name, data)
-      end = performance.now()
-      console.log(`mapCollectionData(${name},${data.length}): ${(end-start)/1000}s`)
 
       if (collection) {
-        start = performance.now()
         while(collection.length) {
           const batch = collection.splice(0, 100000)
           try {
@@ -70,9 +62,20 @@ class Commander {
             logger.error('unable to import collection:', e)
           }
         }
-        end = performance.now()
-        console.log(`collections(${name}).documents().import(${collection.length}): ${(end-start)/1000}s`)
       }
+    }
+  }
+
+  update = async (): Promise<void> => {
+    throw new Error('Not implemented')
+    for (const schema of schemas) {
+      const updateSchema = {
+        fields: [
+          { 'name': 'tokenId', 'drop': true },
+          ...schema.fields.filter(field => field.name === 'tokenId'),
+        ],
+      }
+      await this.client.collections(schema.name).update(updateSchema as CollectionUpdateSchema)
     }
   }
 

@@ -1,11 +1,10 @@
 {
   "name": "nfts",
   "fields": [
-    {"name": "id", "type": "string", "facet": false, "index": false },
     {"name": "nftName", "type": "string", "facet": false, "index": true },
     {"name": "nftType", "type": "string", "facet": true, "index": true },
-    {"name": "tokenId", "type": "string", "facet": false, "index": true },
-    {"name": "traits", "type": "string[]", "facet": true, "index": true, "optional": true },
+    {"name": "tokenId", "type": "string", "facet": true, "index": true },
+    {"name": "traits", "type": "object[]", "facet": true, "index": true, "optional": true },
     {"name": "imageURL", "type": "string", "facet": false, "index": false, "optional": true }, 
     {"name": "ownerAddr", "type": "string", "facet": false, "index": true },
     {"name": "chain", "type": "string", "facet": true, "index": true },
