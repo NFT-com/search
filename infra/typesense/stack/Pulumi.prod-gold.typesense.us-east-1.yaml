@@ -1,4 +1,4 @@
-encryptionsalt: v1:2DmnQdXPAtw=:v1:YJxRLn/8Ra99U9vG:sPV0CbSH46RVIM9QE3ceHfTN2hDIDQ==
+encryptionsalt: v1:7RPyZQUYBko=:v1:Rnlge6HUFTekK6eI:kECpZd5ahEbZdYD0CuQiiVXsYATH1g==
 config:
   nftcom:tsAutoScaleMin: "3"
   nftcom:tsAvailabilityZones: us-east-1a,us-east-1b,us-east-1c

@@ -99,7 +99,7 @@ const createLoadBalancer = (
     ipAddressType: 'ipv4',
     name: getResourceName('typesense-lb'),
     securityGroups: [infraOutput.webSGId],
-    subnets: infraOutput.publicSubnets,
+    subnets: infraOutput.publicSubnetIds,
     tags: getTags(tags),
   })
 }
