@@ -6,7 +6,7 @@ import { deployInfra } from '../helper'
 import { createEc2Asg } from './ec2_asg'
 
 const getSharedStackOutputs = async (): Promise<any> => {
-  const sharedStack = new pulumi.StackReference(`${process.env.STAGE}.shared.${process.env.AWS_REGION}`)
+  const sharedStack = new pulumi.StackReference(`${process.env.STAGE?.split('-')[0]}.shared.${process.env.AWS_REGION}`)
   return sharedStack.outputs
 }
 

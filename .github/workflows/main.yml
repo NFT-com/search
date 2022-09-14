@@ -59,3 +59,7 @@ jobs:
         with:
           secrets: ${{ toJSON(secrets) }}
           stage: prod
+      - uses: ./search/.github/actions/deploy-env
+        with:
+          secrets: ${{ toJSON(secrets) }}
+          stage: prod-gold

@@ -48,7 +48,7 @@ export const pulumiOutToValue = <T>(output: pulumi.Output<T>): Promise<T> => {
   })
 }
 
-export const isProduction = (): boolean => getStage() === 'prod'
+export const isProduction = (): boolean => getStage().startsWith('prod')
 
 export const isFalse = (v: boolean): boolean => v === false
 
@@ -84,7 +84,6 @@ export const deployInfra = async (
   }
 
   const result = await stack.up({ onOutput: console.info })
-  // console.log('Update summary', JSON.stringify(result.summary))
   return result.outputs
 }
 
