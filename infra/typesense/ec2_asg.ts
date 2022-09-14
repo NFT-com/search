@@ -3,7 +3,7 @@ import { ec2 } from '@pulumi/awsx'
 import * as pulumi from '@pulumi/pulumi'
 
 import { SharedInfraOutput } from '../defs'
-import { getResourceName, getTags, isProduction } from '../helper'
+import { getResourceName, getStage, getTags, isProduction } from '../helper'
 
 type InfraOutput = Omit<SharedInfraOutput, 'typesenseSGId'> & {
   typesenseSGId: pulumi.Output<string>
@@ -168,8 +168,15 @@ const createBlockDevices = (config: pulumi.Config): aws.ebs.Volume[] => {
   })
 }
 
-const mountPoint = process.env.STAGE === 'prod' ? '/dev/nvme1n1' : '/dev/xvdf'
+const typesenseVersionMap: {[key: string]: string }= {
+  dev: '0.24.0.rcn4',
+  staging: '0.24.0.rcn4',
+  prod: '0.23.0',
+  'prod-gold': '0.24.0.rcn4',
+}
+const mountPoint = isProduction() ? '/dev/nvme1n1' : '/dev/xvdf'
 const getUserData = (): string => {
+  const typesenseVersion = typesenseVersionMap[getStage()]
   return `#!/bin/bash -ex
   # Download and install packages
   apt-get update
@@ -224,8 +231,8 @@ const getUserData = (): string => {
   echo '${mountPoint} /var/lib/typesense ext4 defaults,nofail 0 2' >> /etc/fstab
 
   # Download and install Typesense
-  curl -O https://dl.typesense.org/releases/0.24.0.rcn4/typesense-server-0.24.0.rcn4-amd64.deb
-  apt-get install -y ./typesense-server-0.24.0.rcn4-amd64.deb
+  curl -O https://dl.typesense.org/releases/${typesenseVersion}/typesense-server-${typesenseVersion}-amd64.deb
+  apt-get install -y ./typesense-server-${typesenseVersion}-amd64.deb
   EC2_PRIVATE_IP=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)
   echo "peering-address = $EC2_PRIVATE_IP" >> /etc/typesense/typesense-server.ini
   echo 'peering-port = 8107' >> /etc/typesense/typesense-server.ini
@@ -360,7 +367,7 @@ const createLaunchTemplate = (
     imageId: ami.id,
     instanceType: config.require('tsInstance'),
     iamInstanceProfile: { name: typesenseProfile.name },
-    keyName: process.env.STAGE === 'prod' ? 'typesense_key' : 'eth_node_key',
+    keyName: isProduction() ? 'typesense_key' : 'eth_node_key',
     vpcSecurityGroupIds: [infraOutput.typesenseSGId],
     userData: Buffer.from(getUserData()).toString('base64'),
     monitoring: {
