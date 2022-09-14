@@ -174,8 +174,8 @@ const typesenseVersionMap: {[key: string]: string }= {
   prod: '0.23.0',
   'prod-gold': '0.24.0.rcn4',
 }
-const mountPoint = isProduction() ? '/dev/nvme1n1' : '/dev/xvdf'
 const getUserData = (): string => {
+  const mountPoint = isProduction() ? '/dev/nvme1n1' : '/dev/xvdf'
   const typesenseVersion = typesenseVersionMap[getStage()]
   return `#!/bin/bash -ex
   # Download and install packages
