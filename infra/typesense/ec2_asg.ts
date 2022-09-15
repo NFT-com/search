@@ -263,6 +263,7 @@ const getUserData = (): string => {
           --query '"'"'Reservations[].Instances[].PrivateIpAddress'"'"' \
           --output json | jq '"'"'.[] += \\":8107:8108\\"'"'"' | jq -r '"'"'join(\\",\\")'"'"' \
           | tee /etc/typesense/nodes"\
+        "systemctl restart typesense-server.service"\
         ]\
       }' \
     --timeout-seconds 600 \
@@ -271,8 +272,6 @@ const getUserData = (): string => {
   SSM_SEND_COMMAND
   chmod 755 /etc/rc.local
   . /etc/rc.local
-
-  systemctl restart typesense-server.service
   `.replace(/^\s{0,2}/gm, '')
 }
 
@@ -410,9 +409,11 @@ const createAutoScalingGroup = (
       id: lt.id,
       version: '$Latest',
     },
+    healthCheckGracePeriod: 390,
+    healthCheckType: 'ELB',
     instanceRefresh: {
       preferences: {
-        checkpointDelay: '300',
+        checkpointDelay: '390',
         checkpointPercentages: [33, 66, 100],
         minHealthyPercentage: 100,
       },
