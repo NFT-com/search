@@ -26,7 +26,7 @@ export const mapCollectionData = (
         contractName: collection.name,
         chain: collection.chainId,
         description: '',
-        floor: process.env.TYPESENSE_HOST === 'prod-typesense.nft.com' ? 0.0 : getRandomFloat(0, 5, 2),
+        floor: process.env.TYPESENSE_HOST.startsWith('prod') ? 0.0 : getRandomFloat(0, 5, 2),
         nftType: collection.nft?.type || '',
       }
     })
@@ -34,12 +34,15 @@ export const mapCollectionData = (
   case 'nfts':
     result = data.map((nft: NFTDao) => {
       const tokenId = BigNumber.from(nft.tokenId).toString()
-      const traits = nft.metadata.traits.map((trait) => {
-        return {
-          type: trait.type,
-          value: `${trait.value}`,
-        }
-      })
+      let traits = []
+      if (nft.metadata.traits.length < 100) {
+        traits = nft.metadata.traits.map((trait) => {
+          return {
+            type: trait.type,
+            value: `${trait.value}`,
+          }
+        })
+      }
       const profileContract = process.env.TYPESENSE_HOST.startsWith('dev') ?
         '0x9Ef7A34dcCc32065802B1358129a226B228daB4E' : '0x98ca78e89Dd1aBE48A53dEe5799F24cC1A462F2D'
       return {
@@ -53,10 +56,10 @@ export const mapCollectionData = (
         chain: nft.wallet.chainName,
         contractName: nft.collection?.name || '',
         contractAddr: nft.contract,
-        marketplace: process.env.TYPESENSE_HOST === 'prod-typesense.nft.com' ? '' : 'OpenSea',
+        marketplace: process.env.TYPESENSE_HOST.startsWith('prod') ? '' : 'OpenSea',
         listingType: '',
-        listedPx: process.env.TYPESENSE_HOST === 'prod-typesense.nft.com' ? 0.0 : getRandomFloat(0.3, 2, 2),
-        currency: process.env.TYPESENSE_HOST === 'prod-typesense.nft.com' ? '' : 'ETH',
+        listedPx: process.env.TYPESENSE_HOST.startsWith('prod') ? 0.0 : getRandomFloat(0.3, 2, 2),
+        currency: process.env.TYPESENSE_HOST.startsWith('prod') ? '' : 'ETH',
         status: '',
         isProfile: nft.contract === profileContract,
       }
