@@ -29,6 +29,9 @@ const dbConfig = {
   database: process.env.DB_DATABASE || 'app',
   logging: helper.parseBoolean(process.env.DB_LOGGING) || false,
   useSSL: helper.parseBoolean(process.env.DB_USE_SSL),
+  extra: {
+    ssl: { rejectUnauthorized: false },
+  },
 }
 
 const main = async (): Promise<void> => {
@@ -38,6 +41,8 @@ const main = async (): Promise<void> => {
 
   await commander.erase()
   await commander.restore()
+  // await commander.update('collections', ['contractAddr'])
+  // await commander.update('nfts', ['contractAddr'])
 
   await db.disconnect()
 }

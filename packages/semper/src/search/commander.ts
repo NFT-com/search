@@ -66,16 +66,22 @@ class Commander {
     }
   }
 
-  update = async (): Promise<void> => {
-    throw new Error('Not implemented')
+  private _dropFields = (fields: string[]): {name: string; drop: boolean}[] => {
+    return fields.map(field => {
+      return { name: field, drop: true }
+    })
+  }
+  update = async (collection: string, fields: string[]): Promise<void> => {
     for (const schema of schemas) {
-      const updateSchema = {
-        fields: [
-          { 'name': 'tokenId', 'drop': true },
-          ...schema.fields.filter(field => field.name === 'tokenId'),
-        ],
+      if (schema.name === collection) {
+        const updateSchema = {
+          fields: [
+            ...this._dropFields(fields),
+            ...schema.fields.filter(field => fields.includes(field.name)),
+          ],
+        }
+        await this.client.collections(schema.name).update(updateSchema as CollectionUpdateSchema)
       }
-      await this.client.collections(schema.name).update(updateSchema as CollectionUpdateSchema)
     }
   }
 

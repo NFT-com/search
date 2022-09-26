@@ -19,20 +19,24 @@ export const mapCollectionData = (
   let result: any[]
   switch (collectionName) {
   case 'collections':
-    result = data.map((collection: CollectionDao) => {
+    result = data.filter((collection: CollectionDao) => {
+      return !collection.isSpam
+    }).map((collection: CollectionDao) => {
       return {
         id: collection.id,
         contractAddr: collection.contract,
         contractName: collection.name,
         chain: collection.chainId,
-        description: '',
+        description: collection.description || '',
         floor: process.env.TYPESENSE_HOST.startsWith('prod') ? 0.0 : getRandomFloat(0, 5, 2),
         nftType: collection.nft?.type || '',
       }
     })
     break
   case 'nfts':
-    result = data.map((nft: NFTDao) => {
+    result = data.filter((nft: NFTDao) => {
+      return nft.collection && !nft.collection.isSpam
+    }).map((nft: NFTDao) => {
       const tokenId = BigNumber.from(nft.tokenId).toString()
       let traits = []
       if (nft.metadata.traits.length < 100) {

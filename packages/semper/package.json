@@ -8,7 +8,7 @@
     "build": "npm run clean && npm run compile",
     "clean": "rimraf dist tsconfig.tsbuildinfo",
     "compile": "tsc && tsc-alias",
-    "dev": "doppler run --preserve-env -- node dist/index.js",
+    "dev": "doppler run --preserve-env -- ts-node src/index",
     "start": "npm run dev"
   },
   "dependencies": {

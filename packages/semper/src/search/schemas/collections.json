@@ -1,14 +1,15 @@
 {
   "name": "collections",
   "fields": [
-    {"name": "contractAddr", "type": "string", "facet": false, "index": true },
-    {"name": "contractName", "type": "string", "facet": true, "index": true },
-    {"name": "chain", "type": "string", "facet": true, "index": true },
-    {"name": "description", "type": "string", "facet": false, "index": false, "optional": true },
-    {"name": "floor", "type": "float", "facet": false, "index": false, "optional": true },
-    {"name": "nftType", "type": "string", "facet": true, "index": true },
-    {"name": "bannerUrl", "type": "string", "facet": false, "index": false, "optional": true },
-    {"name": "logoUrl", "type": "string", "facet": false, "index": false, "optional": true }
+    { "name": "contractAddr", "type": "string", "facet": false, "index": true },
+    { "name": "contractName", "type": "string", "facet": true, "index": true },
+    { "name": "chain", "type": "string", "facet": true, "index": true },
+    { "name": "description", "type": "string", "facet": false, "index": false, "optional": true },
+    { "name": "floor", "type": "float", "facet": false, "index": false, "optional": true },
+    { "name": "nftType", "type": "string", "facet": true, "index": true },
+    { "name": "bannerUrl", "type": "string", "facet": false, "index": false, "optional": true },
+    { "name": "logoUrl", "type": "string", "facet": false, "index": false, "optional": true },
+    { "name": "score", "type": "int32", "facet": false, "index": true }
   ],
-  "default_sorting_field": ""
+  "default_sorting_field": "score"
 }

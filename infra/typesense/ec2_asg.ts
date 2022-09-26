@@ -78,7 +78,7 @@ const createSecurityGroup = (infraOutput: InfraOutput): aws.ec2.SecurityGroup =>
 const createTargetGroup = (infraOutput: InfraOutput): aws.lb.TargetGroup => {
   return new aws.lb.TargetGroup('tg_typesense', {
     healthCheck: {
-      healthyThreshold: 5,
+      healthyThreshold: 2,
       matcher: '200',
       path: '/health',
       timeout: 5,
@@ -163,24 +163,63 @@ const createBlockDevices = (config: pulumi.Config): aws.ebs.Volume[] => {
       tags: getTags({
         ...tags,
         'availability-zone': az,
+        'Name': getResourceName(`typesense-${az.slice(-2)}`),
       }),
     })
   })
 }
 
 const typesenseVersionMap: {[key: string]: string }= {
-  dev: '0.24.0.rcn13',
-  staging: '0.24.0.rcn13',
+  dev: '0.24.0.rcn14',
+  staging: '0.24.0.rcn14',
   prod: '0.23.0',
   'prod-gold': '0.24.0.rcn13',
+  'prod-black': '0.24.0.rcn14',
 }
 const getUserData = (): string => {
   const mountPoint = isProduction() ? '/dev/nvme1n1' : '/dev/xvdf'
   const typesenseVersion = typesenseVersionMap[getStage()]
   return `#!/bin/bash -ex
   # Download and install packages
+  curl https://packages.fluentbit.io/fluentbit.key | gpg --dearmor > /usr/share/keyrings/fluentbit-keyring.gpg
+  export CODENAME=$(cat /etc/lsb-release | grep -m 1 DISTRIB_CODENAME | cut -d "=" -f2)
+  echo "deb [signed-by=/usr/share/keyrings/fluentbit-keyring.gpg] \
+  https://packages.fluentbit.io/ubuntu/\${CODENAME} \${CODENAME} main" >> /etc/apt/sources.list.d/fluentbit.list 
   apt-get update
-  apt-get install -y awscli jq
+  apt-get install -y awscli jq fluent-bit
+
+  export NOW=$(date +%s%N)
+  cat > '/etc/fluent-bit/parsers.conf' <<-'PARSERS_CONF'
+[PARSER]
+    Name        glog
+    Format      regex
+    Regex       ^(?<severity>[IWEF])(?<timestamp>\\d{8} \\d{2}:\\d{2}:\\d{2}\\.\\d{6}) +(?<thread>\\d+) (?<src_file>[^:]+):(?<src_line>\\d+)\\] (?<msg>.*)$
+    Time_Key    timestamp
+    Time_Format %Y%m%d %H:%M:%S.%L
+    Time_Keep   On
+  PARSERS_CONF
+  cat > '/etc/fluent-bit/fluent-bit.conf' <<-FLUENTBIT_CONF
+  [SERVICE]
+      flush        10
+      daemon       Off
+      log_level    info
+      parsers_file parsers.conf
+      plugins_file plugins.conf
+      http_server  Off
+  [INPUT]
+      name tail
+      path /var/log/typesense/typesense.log
+  [OUTPUT]
+      Name                cloudwatch_logs
+      Match               *
+      region              us-east-1
+      log_group_name      /ec2/typesense
+      log_stream_name     ${getStage()}-${typesenseVersion}-\${NOW}
+      auto_create_group   true
+      log_key             log
+      log_retention_days  1
+  FLUENTBIT_CONF
+  systemctl restart fluent-bit.service
 
   # Attach and mount EBS volume
   EC2_AVAIL_ZONE=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone)
@@ -239,6 +278,16 @@ const getUserData = (): string => {
   echo 'enable-cors = true' >> /etc/typesense/typesense-server.ini
   echo 'nodes = /etc/typesense/nodes' >> /etc/typesense/typesense-server.ini
   sed -i 's/api-key = .*/api-key = ${process.env.TYPESENSE_API_KEY}/' /etc/typesense/typesense-server.ini
+  cat > '/etc/logrotate.d/typesense' <<-'LOGROTATE'
+  /var/log/typesense/typesense.log {
+    rotate 7
+    daily    
+    compress
+    missingok
+    notifempty
+    copytruncate
+  }
+  LOGROTATE
 
   # Add SSM Command to rc.local incase the instance is restarted
   cat > '/etc/rc.local' <<-'SSM_SEND_COMMAND'
@@ -262,12 +311,12 @@ const getUserData = (): string => {
           --region $EC2_REGION \
           --query '"'"'Reservations[].Instances[].PrivateIpAddress'"'"' \
           --output json | jq '"'"'.[] += \\":8107:8108\\"'"'"' | jq -r '"'"'join(\\",\\")'"'"' \
-          | tee /etc/typesense/nodes"\
+          | tee /etc/typesense/nodes",\
         "systemctl restart typesense-server.service"\
         ]\
       }' \
     --timeout-seconds 600 \
-    --max-concurrency "50" \
+    --max-concurrency "1" \
     --max-errors "0"
   SSM_SEND_COMMAND
   chmod 755 /etc/rc.local
@@ -324,6 +373,11 @@ const createInstanceProfile = (): aws.iam.InstanceProfile => {
             'ssm:StartAutomationExecution',
             'ssm:ListTagsForResource',
             'ssm:GetCalendarState',
+            'logs:CreateLogGroup',
+            'logs:CreateLogStream',
+            'logs:PutLogEvents',
+            'logs:DescribeLogStreams',
+            'logs:PutRetentionPolicy',
           ],
           Resource: '*',
         },
@@ -410,10 +464,9 @@ const createAutoScalingGroup = (
       version: '$Latest',
     },
     healthCheckGracePeriod: 390,
-    healthCheckType: 'ELB',
     instanceRefresh: {
       preferences: {
-        checkpointDelay: '390',
+        checkpointDelay: '60',
         checkpointPercentages: [33, 66, 100],
         minHealthyPercentage: 100,
       },
