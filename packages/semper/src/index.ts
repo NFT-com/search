@@ -24,7 +24,7 @@ const typesenseClient = new Typesense.Client({
 const dbConfig = {
   host: process.env.DB_HOST || 'localhost',
   port: parseInt(process.env.DB_PORT) || 5432,
-  user: process.env.DB_USERNAME || 'app',
+  username: process.env.DB_USERNAME || 'app',
   password: process.env.DB_PASSWORD || 'password',
   database: process.env.DB_DATABASE || 'app',
   logging: helper.parseBoolean(process.env.DB_LOGGING) || false,
@@ -36,10 +36,11 @@ const main = async (): Promise<void> => {
   const repositories = db.newRepositories()
   const commander = new Commander(typesenseClient, repositories)
 
-  await commander.erase()
-  await commander.restore()
+  // await commander.erase()
+  // await commander.restore()
   // await commander.update('collections', ['contractAddr'])
   // await commander.update('nfts', ['contractAddr'])
+  await commander.reindexNFTsByContract('0x8fB5a7894AB461a59ACdfab8918335768e411414')
 
   await db.disconnect()
 }

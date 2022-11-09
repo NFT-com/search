@@ -26,6 +26,19 @@ class Commander {
     this.repositories = repositories
   }
 
+  reindexNFTsByContract = async (contractAddr: string): Promise<void> => {
+    const nfts = await this.repositories.nft.findAllWithRelationsByContract(contractAddr)
+    const collection = mapCollectionData('nfts', nfts)
+    if (collection?.length) {
+      await this.client.collections('nfts').documents().delete({ 'filter_by': `contractAddr:=${contractAddr}` })
+      try {
+        await this.client.collections('nfts').documents().import(collection, { action: 'upsert' })
+      } catch (e) {
+        logger.error('unable to import collection:', e)
+      }
+    }
+  }
+
   erase = (): Promise<PromiseSettledResult<CollectionSchema>[]> => {
     return Promise.allSettled(
       collectionNames.map((collection) => {
