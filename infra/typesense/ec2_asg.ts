@@ -147,7 +147,7 @@ const getAmi = (): pulumi.Output<aws.ec2.GetAmiResult> => {
   return aws.ec2.getAmiOutput({
     filters: [{
       name: 'name',
-      values: ['ubuntu/images/hvm-ssd/ubuntu-*-amd64-server-*'],
+      values: ['ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*'], //hardcode ubuntu focal 20.04 as newer versions cause compatibility issues (tech debt)
     }],
     owners: ['099720109477'], // Canonical
     mostRecent: true,
