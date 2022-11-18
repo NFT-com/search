@@ -3,4 +3,4 @@ config:
   nftcom:tsAutoScaleMin: "1"
   nftcom:tsAvailabilityZones: us-east-1b
   nftcom:tsEbsSize: "8"
-  nftcom:tsInstance: t2.medium
+  nftcom:tsInstance: r6g.large
