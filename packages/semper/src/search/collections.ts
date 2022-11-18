@@ -2,7 +2,7 @@ import { BigNumber } from 'ethers'
 
 import { entity } from '@nftcom/shared'
 
-import { CollectionDao, NFTDao } from './model'
+import { CollectionDao } from './model'
 
 const PROFILE_CONTRACT = process.env.TYPESENSE_HOST.startsWith('dev') ?
   '0x9Ef7A34dcCc32065802B1358129a226B228daB4E' : '0x98ca78e89Dd1aBE48A53dEe5799F24cC1A462F2D'
@@ -23,17 +23,20 @@ const calculateCollectionScore = (collection: CollectionDao): number => {
   const nftcomVal = [PROFILE_CONTRACT, GK_CONTRACT].includes(collection.contract) ? 1000000 : 0
   return officialVal + nftcomVal
 }
-export const mapCollectionData = (
+
+export const mapCollectionData = async (
   collectionName: string,
   data: any[],
-): entity.BaseEntity[] => {
-  let result: any[]
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _repos: any,
+): Promise<entity.BaseEntity[]> => {
+  const result = []
   switch (collectionName) {
   case 'collections':
-    result = data.filter((collection: CollectionDao) => {
-      return !collection.isSpam
-    }).map((collection: CollectionDao) => {
-      return {
+    for (let i = 0; i < data.length; i++) {
+      const collection = data[i]
+      if (collection.isSpam) continue
+      result.push({
         id: collection.id,
         contractAddr: collection.contract,
         contractName: collection.name,
@@ -42,16 +45,16 @@ export const mapCollectionData = (
         floor: process.env.TYPESENSE_HOST.startsWith('prod') ? 0.0 : getRandomFloat(0, 5, 2),
         nftType: collection.nft?.type || '',
         score: calculateCollectionScore(collection),
-      }
-    })
+      })
+    }
     break
   case 'nfts':
-    result = data.filter((nft: NFTDao) => {
-      return nft.collection && !nft.collection.isSpam
-    }).map((nft: NFTDao) => {
+    for (let i = 0; i < data.length; i++) {
+      const nft = data[i]
+
       const tokenId = BigNumber.from(nft.tokenId).toString()
       let traits = []
-      if (nft.metadata.traits.length < 100) {
+      if (nft.metadata?.traits?.length < 100) {
         traits = nft.metadata.traits.map((trait) => {
           return {
             type: trait.type,
@@ -59,9 +62,9 @@ export const mapCollectionData = (
           }
         })
       }
-      return {
+      result.push({
         id: nft.id,
-        nftName: nft.metadata?.name || `#${tokenId}`,
+        nftName: nft.metadata?.name ? `${nft.metadata?.name}` : `#${tokenId}`,
         nftType: nft.type,
         tokenId,
         traits,
@@ -76,8 +79,8 @@ export const mapCollectionData = (
         currency: process.env.TYPESENSE_HOST.startsWith('prod') ? '' : 'ETH',
         status: '',
         isProfile: nft.contract === PROFILE_CONTRACT,
-      }
-    })
+      })
+    }
     break
   default:
     break

@@ -18,7 +18,7 @@ const typesenseClient = new Typesense.Client({
     },
   ],
   apiKey: TYPESENSE_API_KEY,
-  connectionTimeoutSeconds: 180,
+  connectionTimeoutSeconds: 3600, // 1 hour... because typesense
 })
 
 const dbConfig = {
@@ -36,11 +36,11 @@ const main = async (): Promise<void> => {
   const repositories = db.newRepositories()
   const commander = new Commander(typesenseClient, repositories)
 
-  // await commander.erase()
-  // await commander.restore()
+  await commander.erase()
+  await commander.restore()
   // await commander.update('collections', ['contractAddr'])
   // await commander.update('nfts', ['contractAddr'])
-  await commander.reindexNFTsByContract('0x8fB5a7894AB461a59ACdfab8918335768e411414')
+  // await commander.reindexNFTsByContract('0x23581767a106ae21c074b2276D25e5C3e136a68b')
 
   await db.disconnect()
 }
