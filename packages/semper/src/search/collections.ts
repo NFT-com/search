@@ -2,7 +2,7 @@ import { BigNumber } from 'ethers'
 
 import { entity } from '@nftcom/shared'
 
-import { CollectionDao } from './model'
+import { CollectionDao, NFTDao } from './model'
 
 const PROFILE_CONTRACT = process.env.TYPESENSE_HOST.startsWith('dev') ?
   '0x9Ef7A34dcCc32065802B1358129a226B228daB4E' : '0x98ca78e89Dd1aBE48A53dEe5799F24cC1A462F2D'
@@ -34,7 +34,7 @@ export const mapCollectionData = async (
   switch (collectionName) {
   case 'collections':
     for (let i = 0; i < data.length; i++) {
-      const collection = data[i]
+      const collection = data[i] as CollectionDao
       if (collection.isSpam) continue
       result.push({
         id: collection.id,
@@ -42,7 +42,7 @@ export const mapCollectionData = async (
         contractName: collection.name,
         chain: collection.chainId,
         description: collection.description || '',
-        issuance: collection.issuanceDate.toString(), // need to know what format to use here
+        issuance: collection.issuanceDate.getTime(), // need to know what format to use here
         sales: 0, // need to add this to persisted fields in collection entity
         volume: collection.totalVolume || 0.0,
         floor: collection.floorPrice || 0.0,
@@ -56,7 +56,7 @@ export const mapCollectionData = async (
     break
   case 'nfts':
     for (let i = 0; i < data.length; i++) {
-      const nft = data[i]
+      const nft = data[i] as NFTDao
 
       const tokenId = BigNumber.from(nft.tokenId).toString()
       let traits = []
