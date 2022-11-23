@@ -42,9 +42,14 @@ export const mapCollectionData = async (
         contractName: collection.name,
         chain: collection.chainId,
         description: collection.description || '',
-        floor: process.env.TYPESENSE_HOST.startsWith('prod') ? 0.0 : getRandomFloat(0, 5, 2),
+        issuance: collection.issuanceDate.toString(), // need to know what format to use here
+        sales: 0, // need to add this to persisted fields in collection entity
+        volume: collection.totalVolume || 0.0,
+        floor: collection.floorPrice || 0.0,
         nftType: collection.nft?.type || '',
         bannerUrl: collection.bannerUrl || collection.nft?.metadata?.imageURL,
+        isOfficial: collection.isOfficial || false,
+        isCurated: collection.isCurated || false,
         score: calculateCollectionScore(collection),
       })
     }
@@ -60,6 +65,7 @@ export const mapCollectionData = async (
           return {
             type: trait.type,
             value: `${trait.value}`,
+            rarity: 0.0, // TODO: update when available
           }
         })
       }
@@ -74,11 +80,9 @@ export const mapCollectionData = async (
         chain: nft.wallet ? nft.wallet.chainName : '',
         contractName: nft.collection ? nft.collection.name : '',
         contractAddr: nft.contract || '',
-        marketplace: process.env.TYPESENSE_HOST.startsWith('prod') ? '' : 'OpenSea',
-        listingType: '',
-        listedPx: process.env.TYPESENSE_HOST.startsWith('prod') ? 0.0 : getRandomFloat(0.3, 2, 2),
-        currency: process.env.TYPESENSE_HOST.startsWith('prod') ? '' : 'ETH',
-        status: '',
+        listedFloor: process.env.TYPESENSE_HOST.startsWith('prod') ? 0.0 : getRandomFloat(0.3, 2, 2),
+        status: '', //  HasOffers, BuyNow, New, OnAuction
+        rarity: 0.0,
         isProfile: nft.contract === PROFILE_CONTRACT,
       })
     }
