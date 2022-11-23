@@ -44,6 +44,7 @@ export const mapCollectionData = async (
         description: collection.description || '',
         floor: process.env.TYPESENSE_HOST.startsWith('prod') ? 0.0 : getRandomFloat(0, 5, 2),
         nftType: collection.nft?.type || '',
+        bannerUrl: collection.bannerUrl || collection.nft?.metadata?.imageURL,
         score: calculateCollectionScore(collection),
       })
     }
