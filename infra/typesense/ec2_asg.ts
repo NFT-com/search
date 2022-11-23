@@ -161,8 +161,8 @@ const createBlockDevices = (config: pulumi.Config): aws.ebs.Volume[] => {
       availabilityZone: az,
       size: config.requireNumber('tsEbsSize'),
       type: 'gp3',
-      iops: 10_000,
-      throughput: 500,
+      iops: isProduction() ? 10_000 : undefined,
+      throughput: isProduction() ? 500 : undefined,
       tags: getTags({
         ...tags,
         'availability-zone': az,
