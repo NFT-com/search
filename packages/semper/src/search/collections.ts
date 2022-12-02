@@ -44,8 +44,8 @@ export const mapCollectionData = async (
         description: collection.description || '',
         issuance: collection.issuanceDate?.getTime() || 0,
         sales: collection.totalSales || 0,
-        volume: collection.totalVolume || 0.0,
-        floor: collection.floorPrice || 0.0,
+        volume: +collection.totalVolume || 0.0,
+        floor: +collection.floorPrice || 0.0,
         nftType: collection.nft?.type || '',
         bannerUrl: collection.bannerUrl || collection.nft?.metadata?.imageURL,
         isOfficial: collection.isOfficial || false,
@@ -65,7 +65,7 @@ export const mapCollectionData = async (
           return {
             type: trait.type,
             value: `${trait.value}`,
-            rarity: trait.rarity || 0.0,
+            rarity: parseFloat(trait.rarity) || 0.0,
           }
         })
       }
@@ -83,7 +83,7 @@ export const mapCollectionData = async (
         contractAddr: nft.contract || '',
         listedFloor: process.env.TYPESENSE_HOST.startsWith('prod') ? 0.0 : getRandomFloat(0.3, 2, 2),
         status: '', //  HasOffers, BuyNow, New, OnAuction
-        rarity: nft.rarity || 0.0,
+        rarity: parseFloat(nft.rarity) || 0.0,
         isProfile: nft.contract === PROFILE_CONTRACT,
       })
     }
