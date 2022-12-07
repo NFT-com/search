@@ -161,6 +161,10 @@ class Commander {
     }
   }
 
+  help = async (): Promise<void> => {
+    console.log('Uncomment the commands you want to run!')
+  }
+
 }
 
 export default Commander
