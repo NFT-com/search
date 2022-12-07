@@ -40,7 +40,7 @@ const main = async (): Promise<void> => {
   await commander.restore()
   // await commander.update('collections', ['contractAddr'])
   // await commander.update('nfts', ['contractAddr'])
-  // await commander.reindexNFTsByContract('0x23581767a106ae21c074b2276D25e5C3e136a68b')
+  await commander.reindexNFTsByContract('0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB')
 
   await db.disconnect()
 }
