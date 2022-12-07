@@ -7,7 +7,7 @@
     { "name": "description", "type": "string", "facet": false, "index": false, "optional": true },
     { "name": "nftType", "type": "string", "facet": true, "index": true },
     { "name": "bannerUrl", "type": "string", "facet": false, "index": true, "optional": true },
-    { "name": "issuance", "type": "int32", "facet": true, "index": true },
+    { "name": "issuance", "type": "int64", "facet": true, "index": true },
     { "name": "sales", "type": "int32", "facet": true, "index": true },
     { "name": "volume", "type": "float", "facet": true, "index": true },
     { "name": "floor", "type": "float", "facet": true, "index": true},

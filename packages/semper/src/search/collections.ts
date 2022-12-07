@@ -48,6 +48,7 @@ export const mapCollectionData = async (
         floor: +collection.floorPrice || 0.0,
         nftType: collection.nft?.type || '',
         bannerUrl: collection.bannerUrl || collection.nft?.metadata?.imageURL,
+        logoUrl: collection.logoUrl,
         isOfficial: collection.isOfficial || false,
         isCurated: collection.isCurated || false,
         score: calculateCollectionScore(collection),
