@@ -1,6 +1,6 @@
 # S.E.M.P.E.R.
 
-Search Engine Maintenance, Provisioning, Erasing, and Restoring
+Search Engine Maintenance, Provisioning, Erasing, and Restoring.
 
 Please see [Notion - Typesense-Website-Search](https://www.notion.so/immutableholdings/Typesense-Website-Search-f8d2656e67d242659f423882042228e0) for details on our use of Typesense.
 
