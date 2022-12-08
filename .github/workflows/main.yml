@@ -58,4 +58,4 @@ jobs:
       - uses: ./search/.github/actions/deploy-env
         with:
           secrets: ${{ toJSON(secrets) }}
-          stage: prod-gold
+          stage: prod-black
