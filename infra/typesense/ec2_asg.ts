@@ -173,10 +173,10 @@ const createBlockDevices = (config: pulumi.Config): aws.ebs.Volume[] => {
 }
 
 const typesenseVersionMap: {[key: string]: string }= {
-  dev: '0.24.0.rcn14',
-  staging: '0.24.0.rcn14',
-  'prod-gold': '0.24.0.rcn14',
-  'prod-black': '0.24.0.rcn14',
+  dev: '0.24.0.rcn56',
+  staging: '0.24.0.rcn56',
+  'prod-gold': '0.24.0.rcn56',
+  'prod-black': '0.24.0.rcn56',
 }
 const getUserData = (): string => {
   const mountPoint = getStage() !== 'dev' ? '/dev/nvme1n1' : '/dev/xvdf'
@@ -279,6 +279,7 @@ const getUserData = (): string => {
   echo 'peering-port = 8107' >> /etc/typesense/typesense-server.ini
   echo 'enable-cors = true' >> /etc/typesense/typesense-server.ini
   echo 'nodes = /etc/typesense/nodes' >> /etc/typesense/typesense-server.ini
+  echo 'num-documents-parallel-load = 50000' >> /etc/typesense/typesense-server.ini
   sed -i 's/api-key = .*/api-key = ${process.env.TYPESENSE_API_KEY}/' /etc/typesense/typesense-server.ini
   cat > '/etc/logrotate.d/typesense' <<-'LOGROTATE'
   /var/log/typesense/typesense.log {
