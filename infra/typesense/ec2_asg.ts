@@ -499,7 +499,9 @@ export const createEc2Asg = (config: pulumi.Config, infraOutput: InfraOutput): v
   const tg = createTargetGroup(infraOutput)
   const lb = createLoadBalancer(infraOutput)
   attachLBListeners(lb, tg)
-  createBlockDevices(config)
+  if (config.requireNumber('tsAutoScaleMin') > 0) {
+    createBlockDevices(config)
+  }
   const lt = createLaunchTemplate(config, infraOutput)
   createAutoScalingGroup(config, infraOutput, lt, tg)
 }
