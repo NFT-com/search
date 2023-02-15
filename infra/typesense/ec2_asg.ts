@@ -173,9 +173,9 @@ const createBlockDevices = (config: pulumi.Config): aws.ebs.Volume[] => {
 }
 
 const typesenseVersionMap: {[key: string]: string }= {
-  dev: '0.24.1.rc4',
-  staging: '0.24.1.rc4',
-  'prod-gold': '0.24.1.rc4',
+  dev: '0.24.0',
+  staging: '0.24.0',
+  'prod-gold': '0.24.0',
   'prod-black': '0.24.0.rcn56',
 }
 const getUserData = (): string => {
