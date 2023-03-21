@@ -176,7 +176,7 @@ const typesenseVersionMap: {[key: string]: string }= {
   dev: '0.24.0',
   staging: '0.24.0',
   'prod-gold': '0.24.0',
-  'prod-black': '0.24.0.rcn56',
+  'prod-black': '0.24.0',
 }
 const getUserData = (): string => {
   const mountPoint = getStage() !== 'dev' ? '/dev/nvme1n1' : '/dev/xvdf'
